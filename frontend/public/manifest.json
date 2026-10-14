@@ -1,0 +1,8 @@
+{
+  "short_name": "Gatherly",
+  "name": "Gatherly — Event Discovery & Ticketing",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#453255",
+  "background_color": "#fbfaf7"
+}
