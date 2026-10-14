@@ -6,7 +6,7 @@ Gatherly is a full-stack event platform built to help people discover events, re
 
 ## Live demo
 
-Deployment link: add the Render URL here after your first deployment.
+[Live demo — Gatherly](https://gatherly-event-platform.onrender.com)
 
 ## Highlights
 
