@@ -25,13 +25,13 @@ Gatherly is a full-stack event platform built to help people discover events, re
 | --- | --- |
 | Client | React, React Router, CSS, Lucide icons |
 | Server | Node.js, Express, JWT, bcrypt |
-| Persistence | JSON-backed local persistent store for reliable offline development |
+| Database | MongoDB Atlas, Mongoose ODM |
 | Deployment | Render Blueprint (`render.yaml`) |
 
 ## Architecture
 
 ```text
-React SPA ── REST / JWT ── Express API ── persistent application data
+React SPA ── REST / JWT ── Express API ── MongoDB Atlas
    browser                    backend          users · events · tickets · feedback
 ```
 
@@ -46,7 +46,6 @@ Open two terminals in the repository root.
 ```bash
 cd backend
 npm install
-npm run create-admin
 npm run dev
 ```
 
@@ -64,22 +63,24 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ```text
 Email: ananya@example.com
-Password: EventoraAdmin!2026
+Password: choose the value set in `ADMIN_PASSWORD`
 ```
 
-Change these values in `backend/.env` before sharing the project publicly. Local data is stored in `backend/data/gatherly.json`; it is deliberately excluded from Git.
+Change these values in `backend/.env` before sharing the project publicly. The server creates the administrator from these settings when the MongoDB database is empty; run `npm run create-admin` only if you need to promote/recreate the configured administrator later.
+
+Create a free MongoDB Atlas cluster, create a database user, allow the relevant network access, and put its connection string in `MONGODB_URI`. The backend starts only when it has a MongoDB connection; it seeds the admin and starter events on an empty database.
 
 ## Deploy on Render
 
 1. Push this repository to your own GitHub account.
 2. Visit [Render](https://render.com), sign in with GitHub, and choose **New → Blueprint**.
 3. Select your Gatherly repository. Render detects `render.yaml`.
-4. Set a strong value for `ADMIN_PASSWORD` before creating the service.
+4. Set `MONGODB_URI` to your MongoDB Atlas connection string and set a strong value for `ADMIN_PASSWORD` before creating the service.
 5. Click **Apply**. The deployed URL is shown after the build completes.
 
 The application is designed as a single Render web service: Express serves the production React build and API from the same domain.
 
-> Note: Render's free web service has ephemeral disk storage. For a portfolio demo, the included sample events are recreated when a fresh service starts. For permanent production records, attach a paid persistent disk or migrate `backend/data` to MongoDB/Postgres.
+MongoDB Atlas stores users, events, tickets, and feedback independently of the Render service, so records persist across Render restarts and redeployments.
 
 ## Workflow to explain in interviews
 
@@ -92,16 +93,16 @@ The application is designed as a single Render web service: Express serves the p
 
 ## Resume bullets
 
-- Built **Gatherly**, a full-stack event discovery and ticketing platform using React, Node.js, Express, JWT, and bcrypt; delivered registration, role-based admin access, capacity-aware bookings, digital tickets, and cancellation workflows.
+- Built **Gatherly**, a MERN event discovery and ticketing platform using React, Node.js, Express, MongoDB, Mongoose, JWT, and bcrypt; delivered registration, role-based admin access, capacity-aware bookings, digital tickets, and cancellation workflows.
 - Designed and integrated a responsive REST-driven user experience with protected routes, searchable event discovery, profile management, and a live admin event-publishing dashboard.
-- Implemented server-side booking validation and persistent ticket records to prevent duplicate reservations and maintain accurate event capacity.
+- Modelled users, events, tickets, and feedback in MongoDB with Mongoose; implemented atomic booking validation to prevent duplicate reservations and maintain accurate event capacity.
 
 ## Suggested resume project entry
 
-**Gatherly | Full-Stack Event Management Platform** — React, Node.js, Express, REST APIs, JWT, bcrypt
+**Gatherly | MERN Event Management Platform** — MongoDB, Express, React, Node.js, REST APIs, JWT, bcrypt
 
 GitHub: `github.com/<your-username>/gatherly-event-platform` · Live: `<your-render-url>`
 
 ## Security
 
-Do not commit `.env` files or `backend/data/`. The `.gitignore` already excludes them.
+Do not commit `.env` files or MongoDB connection strings. The `.gitignore` already excludes local environment files.
